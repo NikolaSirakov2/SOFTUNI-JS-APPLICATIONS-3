@@ -1,64 +1,70 @@
 function lockedProfile() {
-    
-    
-    let page = document.getElementById("main");
+  let page = document.getElementById("main");
 
-    async function getData(){
-        let response = await fetch("http://localhost:3030/jsonstore/advanced/profiles");
-        let data = await response.json();
-        let users = Object.values(data);
+  async function getData() {
+    let response = await fetch(
+      "http://localhost:3030/jsonstore/advanced/profiles"
+    );
+    let data = await response.json();
+    let users = Object.values(data);
 
-        users.forEach(user => {
-            console.log(user);
-            let card = document.createElement("div");
+    users.forEach((user) => {
+      let card = document.createElement("div");
+      card.style.width = "190px";
 
-            card.innerHTML = 
-            `<img src="./iconProfile2.png" class="userIcon" />
+      card.innerHTML = `<img src="./iconProfile2.png" class="userIcon" />
             <label>Lock</label>
-            <input type="radio" name="user1Locked" value="lock" id="lock" checked>
+            <input type="radio" name="user1Locked" value="lock" id="lock">
             <label>Unlock</label>
-            <input type="radio" name="user1Locked" value="unlock" id="unlock"><br>
+            <input type="radio" name="user1Locked" value="unlock" id="unlock" checked><br>
             <hr>
             <label>Username</label>
-            <input type="text" name="user1Username" value="${user.username}" disabled readonly />`
+            <input type="text" name="user1Username" value="${user.username}" disabled readonly />`;
 
-            let info = document.createElement("div");
-            info.classList.add("user1Username")
-            info.style.display = "none";
-            
-             info.innerHTML =  ` <hr>
+      let info = document.createElement("div");
+      info.classList.add("user1Username");
+
+      info.style.visibility = "hidden";
+
+      info.innerHTML = ` <hr>
                 <label>Email:</label>
                 <input type="email" name="user1Email" value="${user.email}" disabled readonly />
                 <label>Age:</label>
                 <input type="text" name="user1Age" value="${user.age}" disabled readonly />
-            </div>`
+            </div>`;
 
-            let butt = document.createElement("button");
-            butt.innerText = "Show more";
-            butt.id = "showMore";
+      let butt = document.createElement("button");
+      butt.innerText = "Show more";
+      butt.id = "showMore";
 
-            card.append(info, butt)
+      let radio = document.querySelector('input[name="user1Locked"]:checked');
+      let locked = document.getElementById("lock");
 
-            card.classList.add("profile")
+      butt.addEventListener("click", (e) => {
+        console.log(radio.value);
+        console.log(locked.checked);
 
-            page.appendChild(card)
-        })
-    }
-
-    getData();
-
-    let butt = document.getElementById("showMore")
-    let container = document.getElementsByClassName("user1Username");
-
-    butt.addEventListener("click", (e) => {
-        
-        console.log(container);
-
-        if(butt.innerText !== "Hide it"){
+        if (radio.value !== "lock" && locked.checked !== true) {
+          if (butt.innerText !== "Hide it") {
+            locked.setAttribute("checked", "checked");
             butt.innerText = "Hide it";
-            // container.style.display = "block";
-        } else {
-            butt.innerText = "Show more"
+            info.style.visibility = "visible";
+          } else {
+            butt.innerText = "Show more";
+            info.style.visibility = "hidden";
+          }
         }
-    })
+      });
+
+      card.append(info, butt);
+
+      card.classList.add("profile");
+
+      page.appendChild(card);
+    });
+  }
+
+  getData();
+
+  let butt = document.getElementById("showMore");
 }
